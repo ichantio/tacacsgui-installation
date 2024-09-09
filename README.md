@@ -1,6 +1,10 @@
 # TACACS GUI Installation
 TACACSGUI - Updated for Newer OS - Installer
 
+# DONATION
+This work made me consume copious amount of coffee. If you want to help me then get me some more.  
+[!["Buy Me A Coffee"](https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png)](https://buymeacoffee.com/vlab)
+
 # DISCLAIMER
 - I am NOT a web developer.
 - I fumble through the code and fix what I can so it works on Ubuntu 22.04 with newer software packages.
