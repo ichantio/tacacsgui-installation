@@ -82,4 +82,4 @@ The installer was written from scratch for it to work with Ubuntu 22.04 and 24.0
 [![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 
 # Author
-@me
+:computer: [@me](https://github.com/ichantio)
