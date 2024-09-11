@@ -1,0 +1,23 @@
+[ req ]
+default_bits       = 2048
+default_keyfile    = server.key
+default_md         = sha256
+default_days       = 365
+req_extensions     = req_ext
+distinguished_name = dn
+prompt             = no
+
+[ dn ]
+countryName                = UK
+stateOrProvinceName        = London
+localityName               = London
+organizationName           = Detective
+organizationalUnitName     = Sherlock
+commonName                 = tacacsgui.local
+
+[ req_ext ]
+subjectAltName = @alt_names
+
+[ alt_names ]
+DNS.1 = tacacsgui.lan
+DNS.2 = www.tacacsgui.lan
