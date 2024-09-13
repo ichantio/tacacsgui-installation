@@ -2,7 +2,9 @@
 # Logs output
 exec > >(tee -a logs/installer.log) 2>&1
 echo ""
-echo "Starting installation... at $(date)"
+echo "$(date)"
+echo "STARTING INSTALLATION..."
+echo "LOGGING VERBOSE OUTPUT"
 echo ""
 # Check if sudo or root are available
 if [ "$EUID" -ne 0 ]
@@ -10,25 +12,38 @@ if [ "$EUID" -ne 0 ]
   exit
 fi
 
-# Check if the system is Ubuntu and the version is 22.04
-# If it's Ubuntu and version is 24.04, then give a warning and continue
+# Check if the system is Ubuntu and the version is 22.04 or 24.04
+# If it's Ubuntu and version is 20.04, then give a warning and continue
 # If it's not Ubuntu, then give an error and exit
 if [ -f /etc/os-release ]; then
     . /etc/os-release
-    if [ "$NAME" == "Ubuntu" ]; then
-        if [ "$VERSION_ID" == "22.04" ]; then
-            echo "Ubuntu 22.04 detected"
-        elif [ "$VERSION_ID" == "24.04" ]; then
-            echo "Ubuntu 24.04 detected"
-            echo "This script is intended for Ubuntu 22.04"
-            echo "It may not work as expected"
-            read -p "Do you want to continue? (y/n) " -n 1 -r
-            echo
-            if [[ ! $REPLY =~ ^[Yy]$ ]]; then
+    if [ "$ID" = "ubuntu" ]; then
+        case "$VERSION_ID" in
+            "22.04" | "24.04")
+                echo "Ubuntu $VERSION_ID detected... Proceed with installation"
+                ;;
+            "20.04")
+                echo "Ubuntu 20.04 detected"
+                echo "This script is intended for Ubuntu 22.04 or 24.04"
+                echo "It may not work as expected"
+                read -p "Do you want to continue? (y/n) " -n 1 -r
+                echo
+                if [[ ! $REPLY =~ ^[Yy]$ ]]; then
+                    exit 1
+                fi
+                ;;
+            *)
+                echo "Ubuntu version $VERSION_ID is not supported"
                 exit 1
-            fi
-        else
-            echo "Ubuntu version $VERSION_ID is not supported"
+                ;;
+        esac
+    elif [ "$ID" = "debian" ]; then
+        echo "Debian detected"
+        echo "This script is intended for Ubuntu 22.04 or 24.04"
+        echo "It may not work as expected"
+        read -p "Do you want to continue? (y/n) " -n 1 -r
+        echo
+        if [[ ! $REPLY =~ ^[Yy]$ ]]; then
             exit 1
         fi
     else
@@ -46,17 +61,26 @@ INSTALLER_DIR=$(pwd)
 # Load the configuration file
 source ${INSTALLER_DIR}/conf/install_params.conf
 
-echo -e "\033[0;33m#########################################################################\033[0m"
-echo -e "\033[0;31m  Install base required packages...\033[0m"
-echo -e "\033[0;33m#########################################################################\033[0m"
+echo ""
+echo -e "\033[0;31m  Install: tar expect curl vim net-tools\033[0m"
+echo ""
 # Check the system is up-to-date
-sudo apt-get update -y > /dev/null 2>&1
-sudo apt-get upgrade -y > /dev/null 2>&1
-sudo apt-get install -y tar expect curl vim net-tools > /dev/null 2>&1
+sudo apt-get update -y > /dev/null
+sudo apt-get upgrade -y > /dev/null
+sudo apt-get install -y tar expect curl vim net-tools
 
+echo ""
+echo -e "\033[0;31m  Install: ntpsec\033[0m"
+echo ""
 # NTP
-sudo apt-get install -y ntp
+sudo apt-get install -y ntpsec
+sudo mkdir -p /var/log/ntpsec
+sudo chown root:ntpsec /var/log/ntpsec
+sudo chmod 775 /var/log/ntpsec
 
+echo ""
+echo -e "\033[0;31m  Install: PHP8.3 and associates packages\033[0m"
+echo ""
 # PHP8.3
 sudo apt-get install -y php8.3 php8.3-curl php8.3-ldap
 # NOTE: This will also install apache2
@@ -68,13 +92,16 @@ sudo a2enmod proxy_fcgi setenvif
 sudo a2enconf php8.3-fpm
 sudo systemctl restart apache2
 
+echo ""
+echo -e "\033[0;31m  Update sudo for www-data\033[0m"
+echo ""
 # Add to sudoers.d
 sudo cp ${INSTALLER_DIR}/conf/www-data-sudo /etc/sudoers.d/www-data-sudo
 sudo chmod 640 /etc/sudoers.d/www-data-sudo
 
-echo -e "\033[0;33m#########################################################################\033[0m"
+echo ""
 echo -e "\033[0;31m  Install and config MYSQL...\033[0m"
-echo -e "\033[0;33m#########################################################################\033[0m"
+echo ""
 # MYSQL
 # python-software-properties > software-properties-common
 sudo apt-get install -y mysql-server python3-mysqldb libmysqlclient-dev
@@ -99,20 +126,20 @@ sudo unbuffer expect -c "
 spawn mysql_config_editor set --login-path=tacacsgui --host=localhost --user=tgui_user --password
 expect -nocase \"Enter password:\" {send \"$MYSQL_TGUIPASS\r\"; interact}
 " > /dev/null
-echo -e "\033[0;33m#########################################################################\033[0m"
+echo ""
 echo -e "\033[0;31m  root and tgui_user mysql password encrypted using mysql_config_editor\033[0m"
 echo -e "\033[0;31m  View using my_print_defaults -s [root|tacacsgui] as root user\033[0m"
-echo -e "\033[0;33m#########################################################################\033[0m"
 echo ""
-echo -e "\033[0;33m#########################################################################\033[0m"
+echo ""
+echo ""
 echo -e "\033[0;31m  Install Python packages...\033[0m"
-echo -e "\033[0;33m#########################################################################\033[0m"
+echo ""
 # PYTHON
 sudo apt-get install -y python3-pip software-properties-common meson python3-git python3-typing-extensions python3-greenlet python3-gitdb python3-markupsafe python3-dbus
 # Needs this for mysqlclient
 sudo apt-get install -y python3-dev default-libmysqlclient-dev build-essential libcurl4-openssl-dev libssl-dev
-# More stuff
-sudo apt-get install -y pkg-config libcairo2-dev libjpeg-dev libgif-dev make gcc openssl curl zip unzip libnet-ldap-perl ldap-utils libapache2-mod-xsendfile libpcre3-dev:amd64 libbind-dev
+# More stuff libbind-dev replaced with bind9-dev
+sudo apt-get install -y pkg-config libcairo2-dev libjpeg-dev libgif-dev make gcc openssl curl zip unzip libnet-ldap-perl ldap-utils libapache2-mod-xsendfile libpcre3-dev:amd64 bind9-dev libldap-dev
 # System base python instead of pip
 sudo apt-get install -y python3-sqlalchemy python3-alembic python3-pyotp python3-mysqldb python3-pexpect python3-requests python3-pycurl python3-yaml python3-gi
 # pyyaml is python3-yaml
@@ -121,9 +148,9 @@ sudo apt-get install -y python3-sqlalchemy python3-alembic python3-pyotp python3
 # python3 -m pip install --upgrade pip
 # python3 -m pip install pyyaml argparse pygobject
 
-echo -e "\033[0;33m#########################################################################\033[0m"
+echo ""
 echo -e "\033[0;31m  Install TACACSGUI...\033[0m"
-echo -e "\033[0;33m#########################################################################\033[0m"
+echo ""
 # Create opt
 sudo mkdir -p /opt/tacacsgui
 # Clone main repo
@@ -142,12 +169,12 @@ sudo sed -i "s/<datatabase_passwd_here>/${MYSQL_TGUIPASS}/g" /opt/tacacsgui/web/
 sudo chown -R www-data:www-data /opt/tacacsgui
 sudo chmod 774 /opt/tacacsgui/main.sh /opt/tacacsgui/backup.sh /opt/tacacsgui/tac_plus.sh
 sudo chmod 774 /opt/tacacsgui/interfaces.py
-sudo chmod 777 /opt/tacacsgui/parser/tacacs_parser.sh
-sudo chmod 660 /opt/tacacsgui/tac_plus.cfg*
+sudo chmod 774 /opt/tacacsgui/parser/tacacs_parser.sh
+sudo chmod 600 /opt/tacacsgui/tac_plus.cfg*
 sudo chmod 660 /opt/tacacsgui/tacTestOutput.txt
 sudo find /opt/tacacsgui/web -type d -exec chmod 755 {} \;
 sudo find /opt/tacacsgui/web -type f -exec chmod 644 {} \;
-sudo chmod 640 /opt/tacacsgui/web/api/config.php
+sudo chmod 600 /opt/tacacsgui/web/api/config.php
 
 
 # Create folder for data storage
@@ -164,11 +191,22 @@ sudo touch /opt/tgui_data/confManager/config.yaml
 sudo echo -n '[]' > /opt/tgui_data/confManager/config.yaml
 sudo touch /opt/tgui_data/confManager/cron.yaml
 sudo echo -n '[]' > /opt/tgui_data/confManager/cron.yaml
+sudo touch /opt/tgui_data/confManager/known_hosts
+sudo touch /opt/tgui_data/confManager/pid
 # Took ownership
 sudo chown -R www-data:www-data /opt/tgui_data
 sudo chown -R www-data:www-data /var/log/tacacsgui
 sudo find /opt/tgui_data -type d -exec chmod 755 {} \;
+sudo find /opt/tgui_data -type f -exec chmod 644 {} \;
+sudo find /opt/tgui_data/backups -type d -exec chmod 750 {} \;
+sudo find /opt/tgui_data/backups -type f -exec chmod 640 {} \;
+sudo chmod 600 /opt/tgui_data/confManager/config.yaml
+sudo chmod 600 /opt/tgui_data/confManager/cron.yaml
+sudo chmod 644 /opt/tgui_data/confManager/known_hosts
+sudo chmod 640 /opt/tgui_data/confManager/pid
+git config --global --add safe.directory /opt/tgui_data/confManager/configs
 
+echo ""
 # CHECK IF VARIABLE for GENERATING SSL CERT and KEY or GENERATE CSR instead
 sed -i "s/tacacsgui.lan/${WEBSERVER_NAME}/g" ${INSTALLER_DIR}/conf/web_*.cnf
 if [ $WEBSERVER_SELFSIGNED_CERT = 1 ]; then
@@ -176,6 +214,7 @@ if [ $WEBSERVER_SELFSIGNED_CERT = 1 ]; then
     sudo openssl req -x509 -nodes -days 365 -new -keyout /opt/tgui_data/ssl/tacacsgui.local.key -out /opt/tgui_data/ssl/tacacsgui.local.cer -config ${INSTALLER_DIR}/conf/web_ssl_params.cnf
     sudo chown root:root /opt/tgui_data/ssl/tacacsgui.local.cer
     sudo chmod 644 /opt/tgui_data/ssl/tacacsgui.local.cer
+    echo ""
     echo -e "SSL cert and key generated, \033[0;36m/opt/tgui_data/ssl/\033[0m"
     echo "You can change to your own later"
 else
@@ -191,10 +230,10 @@ fi
 # Key permissions
 sudo chown root:ssl-cert /opt/tgui_data/ssl/tacacsgui.local.key
 sudo chmod 640 /opt/tgui_data/ssl/tacacsgui.local.key
-
-echo -e "\033[0;33m#########################################################################\033[0m"
+echo ""
+echo ""
 echo -e "\033[0;31m  Install PHP packages via composer...\033[0m"
-echo -e "\033[0;33m#########################################################################\033[0m"
+echo ""
 # PHP COMPOSER
 mkdir composer
 cd composer/
@@ -213,13 +252,13 @@ sudo -u www-data composer install -d /opt/tacacsgui/web/api --ignore-platform-re
 cd ${INSTALLER_DIR}
 
 
-echo -e "\033[0;33m#########################################################################\033[0m"
+echo ""
 echo -e "\033[0;31m  Install tac_plus...\033[0m"
-echo -e "\033[0;33m#########################################################################\033[0m"
+echo ""
 # Setup TAC_PLUS
 # TAC_PLUS included 2024-09-11 download
 # git clone https://github.com/MarcJHuber/event-driven-servers.git tac_plus
-tar -xvf tac_plus.tgz
+tar -xvf tac_plus.tgz > /dev/null
 cd ${INSTALLER_DIR}/tac_plus/
 ${INSTALLER_DIR}/tac_plus/configure --with-pcre2 tac_plus
 sudo make
@@ -238,11 +277,19 @@ sudo systemctl daemon-reload
 sudo systemctl enable tac_plus
 sudo systemctl start tac_plus
 
-echo -e "\033[0;33m#########################################################################\033[0m"
+echo ""
 echo -e "\033[0;31m  Enable TACACSGUI apache...\033[0m"
-echo -e "\033[0;33m#########################################################################\033[0m"
+echo ""
 # Setup apache
 sudo cp ${INSTALLER_DIR}/conf/web_tacacsgui* /etc/apache2/sites-available/
+if [ $WEBSERVER_SELFSIGNED_CERT = 1 ]; then
+    echo ""
+    echo "You decided to use self-signed cert.. Disable SSL stapling to avoid error flooding"
+    echo -e "If you decide to replace the cert later, enable SSL stapling in \033[0;31m/etc/apache2/sites-available/web_tacacsgui_global.conf\033[0m"
+    sudo sed -i '/Stapling/ { s/^ *#*/#/; t; s/^/#/ }' /etc/apache2/sites-available/web_tacacsgui_global.conf
+    echo ""
+fi
+
 sudo a2enmod rewrite ssl xsendfile headers
 sudo systemctl restart apache2
 sudo a2dissite 000-default.conf
@@ -254,14 +301,18 @@ sudo systemctl restart apache2
 ACCESS_IP_ADDRESS=$(hostname -I | cut -d' ' -f1)
 
 echo -e "\033[0;33m#########################################################################\033[0m"
+echo ""
 echo -e "\033[0;36m  Installation completed. Access via https://${ACCESS_IP_ADDRESS}\033[0m"
 echo -e "\033[0;36m  Default user and password: tacgui/tacgui\033[0m"
-echo -e "\033[0;33m#########################################################################\033[0m"
+echo ""
 echo -e "\033[0;36m  SSL certs and key are in /opt/tgui_data/ssl\033[0m"
-echo -e "\033[0;33m#########################################################################\033[0m"
+echo ""
 echo -e "\033[0;31m  root and tgui_user mysql password encrypted using mysql_config_editor\033[0m"
 echo -e "\033[0;31m  This let you use mysql -u root (as root) to enter DB automatically \033[0m"
 echo -e "\033[0;31m  View using my_print_defaults -s [root|tacacsgui] as root user\033[0m"
+echo ""
+echo -e "\033[0;31m  View verbose installer logs using: less -R logs/installer.log\033[0m"
+echo ""
 echo -e "\033[0;33m#########################################################################\033[0m"
 
 
