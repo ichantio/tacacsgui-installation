@@ -1,5 +1,8 @@
-# TACACS GUI Installation
-TACACSGUI - Updated for Newer OS - Installer
+# TACACSGUI Installation
+[TACACSGUI](https://github.com/ichantio/tacacsgui.git) NEW Installer  
+For replacing instances that running on EOL Ubuntu 18.04 and nearly EOL Ubuntu 20.04.  
+There is no update on the original repo since 2020.  
+I really hope it will help you as well.
 
 # DONATION
 This work made me consume copious amount of coffee. If you want to help me then get me some more.  
@@ -7,19 +10,23 @@ This work made me consume copious amount of coffee. If you want to help me then 
 
 # DISCLAIMER
 - I am **NOT** a web developer.
-- I fumble through the code and fix what I can so it works on Ubuntu 22.04 and 24.04 with newer software packages.
+- Ubuntu 18.04 is EOL and 20.04 is not far away. I needed this to work on a newer version so I tried my best.
 - SUPPORT: Pretty much none, zip, nada, etc. No support is available private or otherwise.
-- If you create an github issue, I **MAY** look at this and attempt to fix it whenever I have free time.
+- If you create an github issue, I _**MAY**_ look at this and attempt to fix it whenever I have free time.
+- I will not accept any pull request that not actually for fixing broken functions.
 
 # Tested on
 
 OS                                | PHP       | Python        | MySQL        | tac_plus
 ---                               | ---       | ---           | ---          | ---
-Ubuntu Server 22.04 LTS STANDARD  | PHP8.3    | Python3.10.12 | MySQL 8.0.39 | tac_plus latest dl 2024-09-11
-Ubuntu Server 24.04 LTS STANDARD  | PHP8.3.6  | Python3.12.3  | MySQL 8.0.39 | tac_plus latest dl 2024-09-11
+Ubuntu Server 22.04 LTS STANDARD  | PHP8.3.11 | Python3.10.12 | MySQL 8.0.39 | tac_plus latest dl 2024-09
+Ubuntu Server 24.04 LTS STANDARD  | PHP8.3.6  | Python3.12.3  | MySQL 8.0.39 | tac_plus latest dl 2024-09
+
+:heavy_exclamation_mark::warning::heavy_exclamation_mark: NOT TESTED but will probably work on Debian 10 and 12 (very similar software repos)
 
 # Requirement:
-- Ubuntu 22.04 or 24.04 LTS Standard Installation
+- Ubuntu 22.04 or 24.04 LTS Standard Installation  
+:heavy_exclamation_mark: If you want to try Debian 10 or 12, I cannot guarantee that it will work
 - `sudo` or `root` access
 - Packages: `git`
 - Internet access to public repos

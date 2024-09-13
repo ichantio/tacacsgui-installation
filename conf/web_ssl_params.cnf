@@ -13,7 +13,7 @@ stateOrProvinceName        = London
 localityName               = London
 organizationName           = Detective
 organizationalUnitName     = Sherlock
-commonName                 = tacacsgui.local
+commonName                 = tacacsgui.lan
 
 [ req_ext ]
 subjectAltName = @alt_names
