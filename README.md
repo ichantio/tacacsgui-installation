@@ -25,7 +25,7 @@ Ubuntu Server 24.04 LTS STANDARD  | PHP8.3.6  | Python3.12.3  | MySQL 8.0.39 | t
 :heavy_exclamation_mark::warning::heavy_exclamation_mark: NOT TESTED but will probably work on Debian 10 and 12 (very similar software repos)
 
 # Requirement:
-- Ubuntu 22.04 or 24.04 LTS Standard Installation  
+- :heavy_exclamation_mark:_**FRESH**_:heavy_exclamation_mark: Ubuntu 22.04 or 24.04 LTS Standard Installation  
 :heavy_exclamation_mark: If you want to try Debian 10 or 12, I cannot guarantee that it will work
 - `sudo` or `root` access
 - Packages: `git`
