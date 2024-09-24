@@ -182,6 +182,7 @@ sudo mkdir -p /opt/tgui_data/backups
 sudo mkdir -p /opt/tgui_data/ha
 sudo mkdir -p /opt/tgui_data/confManager/configs
 sudo mkdir -p /opt/tgui_data/ssl
+sudo mkdir -p /opt/tgui_data/parser
 sudo mkdir -p /var/log/tacacsgui/apache2
 sudo mkdir -p /var/log/tacacsgui/tac_plus
 # Create default files
@@ -191,6 +192,8 @@ sudo touch /opt/tgui_data/confManager/config.yaml
 sudo echo -n '[]' > /opt/tgui_data/confManager/config.yaml
 sudo touch /opt/tgui_data/confManager/cron.yaml
 sudo echo -n '[]' > /opt/tgui_data/confManager/cron.yaml
+sudo touch /opt/tgui_data/parser/missRules.yaml
+sudo echo -n '[]' > /opt/tgui_data/parser/missRules.yaml
 sudo touch /opt/tgui_data/confManager/known_hosts
 sudo touch /opt/tgui_data/confManager/pid
 # Took ownership
@@ -204,6 +207,7 @@ sudo chmod 600 /opt/tgui_data/confManager/config.yaml
 sudo chmod 600 /opt/tgui_data/confManager/cron.yaml
 sudo chmod 644 /opt/tgui_data/confManager/known_hosts
 sudo chmod 640 /opt/tgui_data/confManager/pid
+sudo chmod 640 /opt/tgui_data/parser/missRules.yaml
 git config --global --add safe.directory /opt/tgui_data/confManager/configs
 
 echo ""
