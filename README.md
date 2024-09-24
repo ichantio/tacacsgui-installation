@@ -94,6 +94,34 @@ chmod +x tacacsgui-migration.sh
 ./tacacsgui-migration.sh restore
 ```
 
+## Added parser filter to keep the logs clean
+The filters below happen before ingestion.  
+Various system has default auto system cmd that generate a lot of logs when a user is logged in.
+- You can edit the filters at 
+```bash
+# Accounting filter
+/opt/tgui_data/parser/acc-filter.txt
+# Authorisation filter
+/opt/tgui_data/parser/autho-filter.txt
+# Authentication filter
+/opt/tgui_data/parser/authe-filter.txt
+```
+
+- Support format: simple regular expression. Example below
+```bash
+# Comment line starting with # is ok
+
+# ^ Empty line like above will be ignored
+# Simple regex to filter out automation host
+robotuser.*192.168.1.10
+robotuser.*control-node.lan
+_ses_open$
+bin.[a-z]{2,5}.*exit=.$
+# DO NOT USE SELECTOR OR FORMAT
+# >> THIS WILL NOT WORK: bin.[a-z]{2,5}\sexit=(0|1)$
+# >> THIS WILL NOT WORK: bin.[a-z]{2,5}\sexit=\(0\|1\)$
+```
+
 # Code status
 The installer was written from scratch for it to work with Ubuntu 22.04 and 24.04
 
