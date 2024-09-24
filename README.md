@@ -91,6 +91,7 @@ chmod +x tacacsgui-migration.sh
 # copy data and the migration script to new server 
 chmod +x tacacsgui-migration.sh
 ./tacacsgui-migration.sh restore
+```
 
 # Code status
 The installer was written from scratch for it to work with Ubuntu 22.04 and 24.04
