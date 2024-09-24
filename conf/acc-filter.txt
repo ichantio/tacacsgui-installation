@@ -1,0 +1,6 @@
+_ses_open$
+_ses_close$
+bin.ls.*support.*
+bin.grep..e=.*python.*
+bin.python.*platform-detect.*
+bin.find.*iname.python.*

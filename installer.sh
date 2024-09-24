@@ -196,6 +196,7 @@ sudo touch /opt/tgui_data/parser/missRules.yaml
 sudo echo -n '[]' > /opt/tgui_data/parser/missRules.yaml
 sudo touch /opt/tgui_data/confManager/known_hosts
 sudo touch /opt/tgui_data/confManager/pid
+sudo cp ${INSTALLER_DIR}/conf/*-filter.txt /opt/tgui_data/parser/
 # Took ownership
 sudo chown -R www-data:www-data /opt/tgui_data
 sudo chown -R www-data:www-data /var/log/tacacsgui
@@ -208,6 +209,7 @@ sudo chmod 600 /opt/tgui_data/confManager/cron.yaml
 sudo chmod 644 /opt/tgui_data/confManager/known_hosts
 sudo chmod 640 /opt/tgui_data/confManager/pid
 sudo chmod 640 /opt/tgui_data/parser/missRules.yaml
+sudo chmod 644 /opt/tgui_data/parser/*-filter.txt
 git config --global --add safe.directory /opt/tgui_data/confManager/configs
 
 echo ""
