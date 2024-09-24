@@ -57,6 +57,7 @@ sudo ./installer.sh
 - Simple firewall setup script [setup-firewall.sh](setup-firewall.sh)
 - [tac_plus.tgz](tac_plug.tgz) compressed package downloaded 2024-09-11  
 :exclamation: There is `tac_plus-ng` but I haven't got time to test it out
+- Automatic migration script [tacacsgui-migration.sh](tacacsgui-migration.sh)
 
 ## Configure firewall
 - Host firewall support.
