@@ -95,8 +95,10 @@ chmod +x tacacsgui-migration.sh
 ```
 
 ## Added parser filter to keep the logs clean
-The filters below happen before ingestion.  
-Various system has default auto system cmd that generate a lot of logs when a user is logged in.
+The filters below happen _**BEFORE**_ logs ingestion.  
+Various system has default auto system cmd that generate a lot of logs when a user is logged in.  
+These filters give you ability to filter them out.
+
 - You can edit the filters at 
 ```bash
 # Accounting filter
