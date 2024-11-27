@@ -67,6 +67,8 @@ echo ""
 # Check the system is up-to-date
 sudo apt-get update -y > /dev/null
 sudo apt-get upgrade -y > /dev/null
+sudo apt-get update --fix-missing > /dev/null
+sudo apt-get upgrade -y > /dev/null
 sudo apt-get install -y tar expect curl vim net-tools
 
 echo ""
@@ -82,6 +84,7 @@ echo ""
 echo -e "\033[0;31m  Install: PHP8 and associates packages\033[0m"
 echo ""
 # PHP8
+sudo apt-get update --fix-missing > /dev/null
 sudo apt-get install -y php php-curl php-ldap
 # NOTE: This will also install apache2
 # Other PHP packages:
@@ -104,6 +107,7 @@ echo -e "\033[0;31m  Install and config MYSQL...\033[0m"
 echo ""
 # MYSQL
 # python-software-properties > software-properties-common
+sudo apt-get update --fix-missing > /dev/null
 sudo apt-get install -y mysql-server python3-mysqldb libmysqlclient-dev
 
 # MYSQL CONFIG
@@ -135,12 +139,16 @@ echo ""
 echo -e "\033[0;31m  Install Python packages...\033[0m"
 echo ""
 # PYTHON
+sudo apt-get update --fix-missing > /dev/null
 sudo apt-get install -y python3-pip software-properties-common meson python3-git python3-typing-extensions python3-greenlet python3-gitdb python3-markupsafe python3-dbus
 # Needs this for mysqlclient
+sudo apt-get update --fix-missing > /dev/null
 sudo apt-get install -y python3-dev default-libmysqlclient-dev build-essential libcurl4-openssl-dev libssl-dev
 # More stuff libbind-dev replaced with bind9-dev
+sudo apt-get update --fix-missing > /dev/null
 sudo apt-get install -y pkg-config libcairo2-dev libjpeg-dev libgif-dev make gcc openssl curl zip unzip libnet-ldap-perl ldap-utils libapache2-mod-xsendfile libpcre3-dev:amd64 bind9-dev libldap-dev
 # System base python instead of pip
+sudo apt-get update --fix-missing > /dev/null
 sudo apt-get install -y python3-sqlalchemy python3-alembic python3-pyotp python3-mysqldb python3-pexpect python3-requests python3-pycurl python3-yaml python3-gi
 # pyyaml is python3-yaml
 # argparse is standard in new python3
