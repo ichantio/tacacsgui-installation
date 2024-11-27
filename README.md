@@ -51,6 +51,7 @@ WEBSERVER_SELFSIGNED_CERT=1
 - Run `installer.sh`
 ```bash
 sudo ./installer.sh
+# NOTE: Installer logs can be found in logs/installer.log
 ```
 ## What does the repo contain?
 - Installer script [installer.sh](installer.sh)
