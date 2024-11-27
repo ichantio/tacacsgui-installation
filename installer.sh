@@ -79,17 +79,17 @@ sudo chown root:ntpsec /var/log/ntpsec
 sudo chmod 775 /var/log/ntpsec
 
 echo ""
-echo -e "\033[0;31m  Install: PHP8.3 and associates packages\033[0m"
+echo -e "\033[0;31m  Install: PHP8 and associates packages\033[0m"
 echo ""
-# PHP8.3
-sudo apt-get install -y php8.3 php8.3-curl php8.3-ldap
+# PHP8
+sudo apt-get install -y php php-curl php-ldap
 # NOTE: This will also install apache2
 # Other PHP packages:
-sudo apt-get install -y php8.3-common php8.3-cli php8.3-dev php8.3-gd php8.3-mbstring php8.3-zip php8.3-mysql php8.3-xml libapache2-mod-php8.3 libapache2-mod-xsendfile
-sudo apt-get install -y php8.3-fpm
+sudo apt-get install -y php-common php-cli php-dev php-gd php-mbstring php-zip php-mysql php-xml libapache2-mod-php libapache2-mod-xsendfile
+sudo apt-get install -y php-fpm
 # PHP FPM
 sudo a2enmod proxy_fcgi setenvif
-sudo a2enconf php8.3-fpm
+sudo a2enconf php*-fpm
 sudo systemctl restart apache2
 
 echo ""
